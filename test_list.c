@@ -11,13 +11,20 @@ typedef struct
   char text[255];
 } foo_t;
 
+void func_cb(void *data)
+{
+  foo_t *f = data;
+  strcat(f->text, " Bar");
+  printf("%s\n", f->text);
+}
+
 int main()
 {
   void *list = new_list();
   foo_t f[3];
-  strcpy(f[0].text, "Foo 1");
-  strcpy(f[1].text, "Foo 2");
-  strcpy(f[2].text, "Foo 3");
+  strcpy(f[0].text, "1 Foo");
+  strcpy(f[1].text, "2 Foo");
+  strcpy(f[2].text, "3 Foo");
 
   for (unsigned int i = 0; i < 3; i++)
     insert_tail(list, &f[i], sizeof(foo_t));
@@ -27,9 +34,10 @@ int main()
       node_t *f = head(list);
       char *text = f->data;
       printf("%s\n", text);
+      for_each(list, func_cb);
       del_head(list);
     }
-
+  
   del_list(list);
   return 0;
 }

@@ -1,30 +1,49 @@
 #include <pthread.h>
+#include <string.h>
 #include "list.h"
 #include "tpool.h"
 
 #define MAX_QUEUE_LENGTH (4 * 1024)
 
+static void del_job(void *data)
+{
+  job_t *job = data;
+
+  if (job->arg_size)
+    free(job->arg);
+}
+
 void clear_tpool(tpool_t *tp)
 {
   pthread_mutex_lock(&tp->mutex);
-  clear_list(&tp->jobs_q);
+  for_each(tp->jobs_q, del_job); 
+  clear_list(tp->jobs_q);
   pthread_mutex_unlock(&tp->mutex);
 }
 
 static void pop_queue(tpool_t *tp)
 {
-  del_head(&tp->jobs_q);
+  node_t *node = head(tp->jobs_q);
+  del_job(node->data);
+  del_head(tp->jobs_q);
 }
 
-void tpool_queue(tpool_t *tp, void (*func)(void *), void *arg)
+void tpool_queue(tpool_t *tp, void (*func)(void *), void *arg, size_t size)
 {
   job_t job = {
     .func = func,
-    .arg = arg
+    .arg = arg,
+    .arg_size = size
   };
+
+  if (size)
+    {
+      job.arg = malloc(size);
+      memcpy(job.arg, arg, size);
+    }
   
   pthread_mutex_lock(&tp->mutex);
-  insert_tail(&tp->jobs_q, &job, 0);
+  insert_tail(tp->jobs_q, &job, sizeof(job_t));
   pthread_mutex_unlock(&tp->mutex);
   pthread_cond_signal(&tp->cond_var);
 }
@@ -38,10 +57,10 @@ static void *worker_th(void *userp)
     {
       pthread_mutex_lock(&tp->mutex);
 
-      if (count(&tp->jobs_q))
+      if (count(tp->jobs_q))
 	pop_queue(tp);
       
-      while (!count(&tp->jobs_q) && !tp->quit)
+      while (!count(tp->jobs_q) && !tp->quit)
 	pthread_cond_wait(&tp->cond_var, &tp->mutex);
 
       if (tp->quit)
@@ -50,7 +69,7 @@ static void *worker_th(void *userp)
 	  return NULL;
 	}
       
-      job_t *job = head(&tp->jobs_q)->data;
+      job_t *job = head(tp->jobs_q)->data;
       pthread_mutex_unlock(&tp->mutex);
       func = job->func;
       func(job->arg);
@@ -62,6 +81,7 @@ static void *worker_th(void *userp)
 void del_tpool(tpool_t *tpool)
 {
   tpool->quit = 1;
+  clear_tpool(tpool);
   pthread_cond_signal(&tpool->cond_var);
   pthread_join(tpool->pth, NULL);
   pthread_cond_destroy(&tpool->cond_var);
@@ -71,7 +91,7 @@ void del_tpool(tpool_t *tpool)
   tpool = NULL;
 }
 
-tpool_t *create_tpool(size_t arg_size, void *data)
+tpool_t *create_tpool(void)
 {
   tpool_t *tpool = malloc(sizeof(tpool_t));
   tpool->quit = 0;

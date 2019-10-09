@@ -191,9 +191,9 @@ node_t *from_node(void *list, node_t *n, size_t N, char pole)
   return n;
 }
 
-void for_each(void *list, void (*cb)(void *, void *), void *data)
+void for_each(void *list, void (*cb)(void *))
 {
   TAILQ_HEAD(queue, node);
   node_t *node;
-  TAILQ_FOREACH(node, (struct queue *) list, nodes) cb(node->data, data);
+  TAILQ_FOREACH(node, (struct queue *) list, nodes) cb(node->data);
 }

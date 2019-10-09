@@ -8,6 +8,7 @@ typedef struct
 {
   void (*func)(void *);
   void *arg;
+  size_t arg_size;
 } job_t;
 
 typedef struct
@@ -19,9 +20,9 @@ typedef struct
   bool quit;
 } tpool_t;
 
-void tpool_queue(tpool_t *, void (*)(void *), void *);
-void clear_tpool(tpool_t *);
+tpool_t *create_tpool(void);
 void del_tpool(tpool_t *);
-tpool_t *create_tpool(size_t, void *);
+void clear_tpool(tpool_t *);
+void tpool_queue(tpool_t *, void (*)(void *), void *, size_t);
 
 #endif
