@@ -8,11 +8,6 @@
 #include <unistd.h>
 #include "tpool.h"
 
-typedef struct
-{
-  char text[255];
-} foo_t;
-
 void func_cb(void *data)
 {
   int *v = (int *) data;
