@@ -21,4 +21,6 @@ libqueue.so: ${OBJ_QUEUE}
 
 clean:
 		@echo cleaning
-		@rm -f libqueue.so ${OBJ_QUEUE}
+		@rm -f ${OBJ_QUEUE}
+		@rm -f test_list
+		@rm -f test_tpool

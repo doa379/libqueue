@@ -57,9 +57,6 @@ static void *worker_th(void *userp)
     {
       pthread_mutex_lock(&tp->mutex);
 
-      if (count(tp->jobs_q))
-	pop_queue(tp);
-      
       while (!count(tp->jobs_q) && !tp->quit)
 	pthread_cond_wait(&tp->cond_var, &tp->mutex);
 
@@ -73,6 +70,7 @@ static void *worker_th(void *userp)
       pthread_mutex_unlock(&tp->mutex);
       func = job->func;
       func(job->arg);
+      pop_queue(tp);
     }
 
   return NULL;
