@@ -3,8 +3,6 @@
 #include "list.h"
 #include "tpool.h"
 
-#define MAX_QUEUE_LENGTH (4 * 1024)
-
 static void del_job(void *data)
 {
   job_t *job = data;
@@ -70,7 +68,9 @@ static void *worker_th(void *userp)
       pthread_mutex_unlock(&tp->mutex);
       func = job->func;
       func(job->arg);
+      pthread_mutex_lock(&tp->mutex);
       pop_queue(tp);
+      pthread_mutex_unlock(&tp->mutex);
     }
 
   return NULL;
