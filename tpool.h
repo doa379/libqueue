@@ -20,7 +20,7 @@ typedef struct
   bool quit;
 } tpool_t;
 
-tpool_t *create_tpool(void);
+tpool_t *new_tpool(void);
 void del_tpool(tpool_t *);
 void clear_tpool(tpool_t *);
 void tpool_queue(tpool_t *, void (*)(void *), void *, size_t);

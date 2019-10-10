@@ -89,7 +89,7 @@ void del_tpool(tpool_t *tpool)
   tpool = NULL;
 }
 
-tpool_t *create_tpool(void)
+tpool_t *new_tpool(void)
 {
   tpool_t *tpool = malloc(sizeof(tpool_t));
   tpool->quit = 0;

@@ -19,7 +19,7 @@ void func_cb(void *data)
 
 int main()
 {
-  tpool_t *tpool = create_tpool();
+  tpool_t *tpool = new_tpool();
   srand(0);
   
   for (unsigned i = 0; i < 5; i++)
