@@ -49,7 +49,6 @@ void tpool_queue(tpool_t *tp, void (*func)(void *), void *arg, size_t size)
 static void *worker_th(void *userp)
 {
   tpool_t *tp = userp;
-  void (*func)(void *);
   
   while (1)
     {
@@ -66,7 +65,7 @@ static void *worker_th(void *userp)
       
       job_t *job = head(tp->jobs_q)->data;
       pthread_mutex_unlock(&tp->mutex);
-      func = job->func;
+      void (*func)(void *) = job->func;
       func(job->arg);
       pthread_mutex_lock(&tp->mutex);
       pop_queue(tp);
