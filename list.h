@@ -24,9 +24,9 @@ node_t *tail(void *);
 size_t count(void *);
 node_t *next(void *, node_t *);
 node_t *prev(void *, node_t *);
-node_t *from_head(void *, size_t);
-node_t *from_tail(void *, size_t);
-node_t *from_node(void *, node_t *, size_t, char);
+node_t *itr_head(void *, size_t);
+node_t *itr_tail(void *, size_t);
+node_t *itr_node(void *, node_t *, size_t, char);
 void for_each(void *, void (*)(void *));
 
 #endif

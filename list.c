@@ -157,7 +157,7 @@ node_t *prev(void *list, node_t *n)
   return TAILQ_PREV(n, queue, nodes);
 }
 
-node_t *from_head(void *list, size_t N)
+node_t *itr_head(void *list, size_t N)
 {
   node_t *n = head(list);
   
@@ -167,7 +167,7 @@ node_t *from_head(void *list, size_t N)
   return n;
 }
 
-node_t *from_tail(void *list, size_t N)
+node_t *itr_tail(void *list, size_t N)
 {
   node_t *n = tail(list);
   
@@ -177,7 +177,7 @@ node_t *from_tail(void *list, size_t N)
   return n;
 }
 
-node_t *from_node(void *list, node_t *n, size_t N, char pole)
+node_t *itr_node(void *list, node_t *n, size_t N, char pole)
 {  
   for (size_t i = 0; i < N; i++)
     {
