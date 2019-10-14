@@ -11,9 +11,9 @@ typedef struct
   char text[255];
 } foo_t;
 
-void func_cb(void *data, void *context)
+void func_cb(node_t *node, void *context)
 {
-  foo_t *f = data;
+  foo_t *f = node->data;
   strcat(f->text, " Bar");
   printf("%s\n", f->text);
 }
