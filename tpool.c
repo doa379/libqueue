@@ -3,7 +3,7 @@
 #include "list.h"
 #include "tpool.h"
 
-static void del_job(void *data)
+static void del_job(void *data, void *context)
 {
   job_t *job = data;
 
@@ -14,7 +14,7 @@ static void del_job(void *data)
 void clear_tpool(tpool_t *tp)
 {
   pthread_mutex_lock(&tp->mutex);
-  for_each(tp->jobs_q, del_job); 
+  for_each(tp->jobs_q, del_job, NULL);
   clear_list(tp->jobs_q);
   pthread_mutex_unlock(&tp->mutex);
 }
@@ -22,7 +22,7 @@ void clear_tpool(tpool_t *tp)
 static void pop_queue(tpool_t *tp)
 {
   node_t *node = head(tp->jobs_q);
-  del_job(node->data);
+  del_job(node->data, NULL);
   del_head(tp->jobs_q);
 }
 

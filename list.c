@@ -2,7 +2,7 @@
 #include "list.h"
 
 void *new_list(void)
-{  
+{
   TAILQ_HEAD(queue, node);
   struct queue *list = malloc(sizeof(struct queue *));
   TAILQ_INIT(list);
@@ -12,7 +12,7 @@ void *new_list(void)
 void clear_list(void *list)
 {
   TAILQ_HEAD(queue, node);
-  
+
   while (!TAILQ_EMPTY((struct queue *) list))
     {
       node_t *n = TAILQ_FIRST((struct queue *) list);
@@ -33,7 +33,7 @@ void insert_head(void *list, void *data, size_t size)
 {
   node_t *h = malloc(sizeof(node_t));
   h->size = size;
-  
+
   if (!size)
     h->data = data;
 
@@ -51,7 +51,7 @@ void insert_tail(void *list, void *data, size_t size)
 {
   node_t *h = malloc(sizeof(node_t));
   h->size = size;
-  
+
   if (!size)
     h->data = data;
 
@@ -71,7 +71,7 @@ void del_head(void *list)
 
   if (TAILQ_EMPTY((struct queue *) list))
     return;
-    
+
   node_t *n = TAILQ_FIRST((struct queue *) list);
   TAILQ_REMOVE((struct queue *) list, n, nodes);
 
@@ -85,7 +85,7 @@ void del_tail(void *list)
 
   if (TAILQ_EMPTY((struct queue *) list))
     return;
-    
+
   node_t *n = TAILQ_LAST((struct queue *) list, queue);
   TAILQ_REMOVE((struct queue *) list, n, nodes);
 
@@ -112,7 +112,7 @@ node_t *head(void *list)
 
   if (TAILQ_EMPTY((struct queue *) list))
     return NULL;
-    
+
   node_t *n = TAILQ_FIRST((struct queue *) list);
   return n;
 }
@@ -123,7 +123,7 @@ node_t *tail(void *list)
 
   if (TAILQ_EMPTY((struct queue *) list))
     return NULL;
-    
+
   node_t *n = TAILQ_LAST((struct queue *) list, queue);
   return n;
 }
@@ -143,7 +143,7 @@ node_t *next(void *list, node_t *n)
 
   if (TAILQ_EMPTY((struct queue *) list))
     return NULL;
-    
+
   return TAILQ_NEXT(n, nodes);
 }
 
@@ -153,14 +153,14 @@ node_t *prev(void *list, node_t *n)
 
   if (TAILQ_EMPTY((struct queue *) list))
     return NULL;
-    
+
   return TAILQ_PREV(n, queue, nodes);
 }
 
 node_t *itr_head(void *list, size_t N)
 {
   node_t *n = head(list);
-  
+
   for (size_t i = 0; i < N; i++)
     n = next(list, n);
 
@@ -170,7 +170,7 @@ node_t *itr_head(void *list, size_t N)
 node_t *itr_tail(void *list, size_t N)
 {
   node_t *n = tail(list);
-  
+
   for (size_t i = 0; i < N; i++)
     n = prev(list, n);
 
@@ -178,22 +178,22 @@ node_t *itr_tail(void *list, size_t N)
 }
 
 node_t *itr_node(void *list, node_t *n, size_t N, char pole)
-{  
+{
   for (size_t i = 0; i < N; i++)
     {
-      if (pole > 0)
-	n = next(list, n);
+      if (pole < 0)
+	n = prev(list, n);
 
       else
-	n = prev(list, n);
+	n = next(list, n);
     }
 
   return n;
 }
 
-void for_each(void *list, void (*cb)(void *))
+void for_each(void *list, void (*cb)(void *, void *), void *context)
 {
   TAILQ_HEAD(queue, node);
   node_t *node;
-  TAILQ_FOREACH(node, (struct queue *) list, nodes) cb(node->data);
+  TAILQ_FOREACH(node, (struct queue *) list, nodes) cb(node->data, context);
 }

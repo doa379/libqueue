@@ -11,7 +11,7 @@ typedef struct
   char text[255];
 } foo_t;
 
-void func_cb(void *data)
+void func_cb(void *data, void *context)
 {
   foo_t *f = data;
   strcat(f->text, " Bar");
@@ -34,7 +34,7 @@ int main()
       node_t *f = head(list);
       char *text = f->data;
       printf("%s\n", text);
-      for_each(list, func_cb);
+      for_each(list, func_cb, NULL);
       del_head(list);
     }
   
