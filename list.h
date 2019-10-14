@@ -6,6 +6,7 @@
 
 typedef struct node
 {
+  void *list;
   void *data;
   size_t size;
   TAILQ_ENTRY(node) nodes;
@@ -27,6 +28,6 @@ node_t *prev(void *, node_t *);
 node_t *itr_head(void *, size_t);
 node_t *itr_tail(void *, size_t);
 node_t *itr_node(void *, node_t *, size_t, char);
-void for_each(void *, void (*)(void *, void *), void *);
+void for_each(void *, void (*)(node_t *, void *), void *);
 
 #endif

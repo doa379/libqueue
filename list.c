@@ -32,6 +32,7 @@ void del_list(void *list)
 void insert_head(void *list, void *data, size_t size)
 {
   node_t *h = malloc(sizeof(node_t));
+  h->list = list;
   h->size = size;
 
   if (!size)
@@ -50,6 +51,7 @@ void insert_head(void *list, void *data, size_t size)
 void insert_tail(void *list, void *data, size_t size)
 {
   node_t *h = malloc(sizeof(node_t));
+  h->list = list;
   h->size = size;
 
   if (!size)
@@ -191,9 +193,9 @@ node_t *itr_node(void *list, node_t *n, size_t N, char pole)
   return n;
 }
 
-void for_each(void *list, void (*cb)(void *, void *), void *context)
+void for_each(void *list, void (*cb)(node_t *, void *), void *context)
 {
   TAILQ_HEAD(queue, node);
   node_t *node;
-  TAILQ_FOREACH(node, (struct queue *) list, nodes) cb(node->data, context);
+  TAILQ_FOREACH(node, (struct queue *) list, nodes) cb(node, context);
 }
