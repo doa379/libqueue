@@ -26,7 +26,7 @@ static void pop_queue(tpool_t *tp)
   del_job(node, NULL);
 }
 
-void tpool_queue(tpool_t *tp, void (*func)(void *), void *arg, size_t size)
+void tpool_queue(tpool_t *tp, void (*func)(void *, void *), void *arg, size_t size)
 {
   job_t job = {
     .func = func,
@@ -65,8 +65,8 @@ static void *worker_th(void *userp)
       
       job_t *job = head(tp->jobs_q)->data;
       pthread_mutex_unlock(&tp->mutex);
-      void (*func)(void *) = job->func;
-      func(job->arg);
+      void (*func)(void *, void *) = job->func;
+      func(tp->context, job->arg);
       pthread_mutex_lock(&tp->mutex);
       pop_queue(tp);
       pthread_mutex_unlock(&tp->mutex);
@@ -88,11 +88,12 @@ void del_tpool(tpool_t *tpool)
   tpool = NULL;
 }
 
-tpool_t *new_tpool(void)
+tpool_t *new_tpool(void *context)
 {
   tpool_t *tpool = malloc(sizeof(tpool_t));
   tpool->quit = 0;
   tpool->jobs_q = new_list();
+  tpool->context = context;
   pthread_mutex_init(&tpool->mutex, NULL);
   pthread_cond_init(&tpool->cond_var, NULL);
   pthread_create(&tpool->pth, NULL, worker_th, (void *) tpool);
