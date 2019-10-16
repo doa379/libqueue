@@ -9,7 +9,7 @@
 #include "tpool.h"
 #include "list.h"
 
-void func_cb(void *data)
+void func_cb(void *context, void *data)
 {
   int *v = (int *) data;
   printf("%d\n", *v);
@@ -19,9 +19,9 @@ void func_cb(void *data)
 
 int main()
 {
-  tpool_t *tpool = new_tpool();
+  tpool_t *tpool = new_tpool(NULL);
   srand(0);
-  
+
   for (unsigned i = 0; i < 5; i++)
     {
       int v = rand() % 100;
@@ -34,7 +34,7 @@ int main()
       printf("%d jobs remaining\n", count(tpool->jobs_q));
       sleep(1);
     }
-  
+
   del_tpool(tpool);
   return 0;
 }
