@@ -146,6 +146,9 @@ node_t *next(void *list, node_t *n)
   if (TAILQ_EMPTY((struct queue *) list))
     return NULL;
 
+  else if (n == tail(list))
+    return head(list);
+
   return TAILQ_NEXT(n, nodes);
 }
 
@@ -155,6 +158,9 @@ node_t *prev(void *list, node_t *n)
 
   if (TAILQ_EMPTY((struct queue *) list))
     return NULL;
+
+  else if (n == head(list))
+    return tail(list);
 
   return TAILQ_PREV(n, queue, nodes);
 }
