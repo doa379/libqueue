@@ -4,7 +4,7 @@
 void *new_list(void)
 {
   TAILQ_HEAD(queue, node);
-  struct queue *list = malloc(sizeof(struct queue *));
+  struct queue *list = malloc(sizeof(struct queue));
   TAILQ_INIT(list);
   return list;
 }
@@ -20,6 +20,8 @@ void clear_list(void *list)
 
       if (n->size)
 	free(n->data);
+
+      free(n);
     }
 }
 
@@ -31,7 +33,7 @@ void del_list(void *list)
 
 void insert_head(void *list, void *data, size_t size)
 {
-  node_t *h = malloc(sizeof(node_t));
+  node_t *h = (node_t *) malloc(sizeof(node_t));
   h->list = list;
   h->size = size;
 
@@ -50,7 +52,7 @@ void insert_head(void *list, void *data, size_t size)
 
 void insert_tail(void *list, void *data, size_t size)
 {
-  node_t *h = malloc(sizeof(node_t));
+  node_t *h = (node_t *) malloc(sizeof(node_t));
   h->list = list;
   h->size = size;
 
@@ -79,6 +81,8 @@ void del_head(void *list)
 
   if (n->size)
     free(n->data);
+
+  free(n);
 }
 
 void del_tail(void *list)
@@ -93,6 +97,8 @@ void del_tail(void *list)
 
   if (n->size)
     free(n->data);
+
+  free(n);
 }
 
 void del_node(void *list, node_t *n)
@@ -106,6 +112,8 @@ void del_node(void *list, node_t *n)
 
   if (n->size)
     free(n->data);
+
+  free(n);
 }
 
 node_t *head(void *list)
