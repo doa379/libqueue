@@ -29,5 +29,6 @@ node_t *itr_head(void *, size_t);
 node_t *itr_tail(void *, size_t);
 node_t *itr_node(void *, node_t *, size_t, char);
 void for_each(void *, void (*)(node_t *, void *), void *);
+void *replicate_list(void *);
 
 #endif

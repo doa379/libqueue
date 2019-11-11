@@ -213,3 +213,16 @@ void for_each(void *list, void (*cb)(node_t *, void *), void *context)
   node_t *node;
   TAILQ_FOREACH(node, (struct queue *) list, nodes) cb(node, context);
 }
+
+void *replicate_list(void *LIST)
+{
+  void *NEW_LIST = new_list();
+
+  for (size_t i = 0; i < count(LIST); i++)
+    {
+      node_t *n = !i ? head(LIST) : next(LIST, n);
+      insert_tail(NEW_LIST, n->data, n->size);
+    }
+
+  return NEW_LIST;
+}
