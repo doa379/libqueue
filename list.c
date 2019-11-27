@@ -154,9 +154,6 @@ node_t *next(void *list, node_t *n)
   if (TAILQ_EMPTY((struct queue *) list))
     return NULL;
 
-  else if (n == tail(list))
-    return head(list);
-
   return TAILQ_NEXT(n, nodes);
 }
 
@@ -167,9 +164,6 @@ node_t *prev(void *list, node_t *n)
   if (TAILQ_EMPTY((struct queue *) list))
     return NULL;
 
-  else if (n == head(list))
-    return tail(list);
-
   return TAILQ_PREV(n, queue, nodes);
 }
 
@@ -177,7 +171,7 @@ node_t *itr_head(void *list, size_t N)
 {
   node_t *n = head(list);
 
-  for (size_t i = 0; i < N; i++)
+  for (size_t i = 0; i < N && n; i++)
     n = next(list, n);
 
   return n;
@@ -187,7 +181,7 @@ node_t *itr_tail(void *list, size_t N)
 {
   node_t *n = tail(list);
 
-  for (size_t i = 0; i < N; i++)
+  for (size_t i = 0; i < N && n; i++)
     n = prev(list, n);
 
   return n;
@@ -217,12 +211,9 @@ void for_each(void *list, void (*cb)(node_t *, void *), void *context)
 void *replicate_list(void *LIST)
 {
   void *NEW_LIST = new_list();
-
-  for (size_t i = 0; i < count(LIST); i++)
-    {
-      node_t *n = !i ? head(LIST) : next(LIST, n);
-      insert_tail(NEW_LIST, n->data, n->size);
-    }
+   
+  for (node_t *n = head(LIST); n; n = next(LIST, n))
+    insert_tail(NEW_LIST, n->data, n->size);
 
   return NEW_LIST;
 }
